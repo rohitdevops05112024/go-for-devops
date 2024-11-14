@@ -14,11 +14,11 @@ node {
         clean_when_build_unstable: true,
 
         // VCS MANAGEMENT 
-        repo_https_url: "https://github.com/Ashutosh-OT/Opstree-Go-WebApp.git",
-        repo_ssh_url: "git@github.com:Ashutosh-OT/Opstree-Go-WebApp.git",
-        repo_branch: "Updating_JenkinsFile",
+        repo_https_url: "https://github.com/rohitdevops05112024/go-for-devops.git",
+        repo_ssh_url: "git@github.com:rohitdevops05112024/go-for-devops.git",
+        repo_branch: "main",
         repo_url_type: "http",
-        jenkins_git_creds_id: "git-creds",
+        jenkins_git_creds_id: "23797119-12d2-4012-9617-72a0315427e8",
         source_code_path: "/",
 
         // Initialize Stage - Setup environment variables
@@ -36,7 +36,7 @@ node {
         fail_job_if_dependency_returned_exception: true,
 
         // Creds Scanning
-        gitleaks_check: true,
+        gitleaks_check: false,
         fail_job_if_leak_detected: false,
         gitleaks_report_format: "html",
         gitleaks_report_jenkins_publish: false,
