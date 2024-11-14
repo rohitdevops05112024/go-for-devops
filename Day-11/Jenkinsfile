@@ -4,7 +4,8 @@ pipeline {
     agent any
 
     environment {
-        GOPATH = "${WORKSPACE}"
+        GOPATH = "${WORKSPACE}/go"
+        GOROOT = "/usr/local/go"
         PATH = "${env.WORKSPACE}/bin:${env.PATH}"
     }
 
