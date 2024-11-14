@@ -50,9 +50,9 @@ pipeline {
                         perform_code_build: true,
                         build_tool: "go",
                         pre_build_commands: [
-                            'cd ./Day-11/go-rest-api && go build -o myapp',  // Ensure we're in the correct directory
+                            'cd ./Day-11/go-rest-api && go build -o myapp',  // Navigate to the correct directory
                             'if [ ! -f go.mod ]; then go mod init example.com/go-app; fi',  // Initialize Go module if needed
-                            'go mod tidy'
+                            'go mod tidy'  // Clean and fetch dependencies
                         ],
 
                         // Unit Testing
@@ -71,7 +71,7 @@ pipeline {
                         perform_build_dockerfile: true,
                         image_name: "go-app",
                         dockerfile_location: "/Dockerfile",
-                        dockerfile_context: "./go-for-devops",  // Docker build context set to repo directory
+                        dockerfile_context: "./Day-11/go-rest-api",  // Docker build context set to correct path
 
                         // Image Scanning
                         image_scanning_check: true,
@@ -98,6 +98,20 @@ pipeline {
                         notification_channel: "teams",
                         webhook_url_creds_id: "teams_webhook"
                     ])
+                }
+            }
+        }
+
+        stage('Build Artifact') {
+            steps {
+                script {
+                    // Ensure we are in the correct working directory for the Go build
+                    sh '''
+                    cd ./Day-11/go-rest-api  # Ensure we're in the correct directory inside the container
+                    if [ ! -f go.mod ]; then go mod init example.com/go-app; fi  # Ensure go.mod is present
+                    go mod tidy  # Fetch and clean dependencies
+                    go build -o output_binary  # Build the Go app
+                    '''
                 }
             }
         }
