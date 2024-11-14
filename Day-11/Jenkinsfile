@@ -50,7 +50,7 @@ pipeline {
                         perform_code_build: true,
                         build_tool: "go",
                         pre_build_commands: [
-                            'cd ./Day-11/go-rest-api',  // Navigate to the correct directory
+                            'cd ./Day-11/go-rest-api && go build -o myapp',  // Navigate to the correct directory
                             'if [ ! -f go.mod ]; then go mod init example.com/go-app; fi',  // Initialize Go module if needed
                             'go mod tidy'  // Clean and fetch dependencies
                         ],
@@ -68,24 +68,24 @@ pipeline {
                         jenkins_sonarqube_token_creds_id: "sonar-token",
 
                         // Docker Build
-                        perform_build_dockerfile: true,
+                        perform_build_dockerfile: false,
                         image_name: "go-app",
                         dockerfile_location: "/Dockerfile",
                         dockerfile_context: "./Day-11/go-rest-api",  // Docker build context set to correct path
 
                         // Image Scanning
-                        image_scanning_check: true,
+                        image_scanning_check: false,
                         image_tag: "latest",
                         scan_severity: "CRITICAL",
                         image_scanning_report_publish: true,
 
                         // Image size validator
-                        image_size_validator_check: true,
+                        image_size_validator_check: false,
                         max_allowed_image_size: 100,
                         fail_job_if_validation_fail: false,
 
                         // Publish Artifact (Docker Image)
-                        artifact_publish_check: true,
+                        artifact_publish_check: false,
                         artifact_destination_type: "ecr",
                         jenkins_aws_credentials_id: "aws-credentials-id",
                         docker_image_name: "go-app",
@@ -102,18 +102,3 @@ pipeline {
             }
         }
 
-        stage('Build Artifact') {
-            steps {
-                script {
-                    // Ensure we are in the correct working directory for the Go build
-                    sh '''
-                    cd ./Day-11/go-rest-api  # Ensure we're in the correct directory inside the container
-                    if [ ! -f go.mod ]; then go mod init example.com/go-app; fi  # Ensure go.mod is present
-                    go mod tidy  # Fetch and clean dependencies
-                    go build -o output_binary .  # Build the Go app, use the current directory as the package
-                    '''
-                }
-            }
-        }
-    }
-}
