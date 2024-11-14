@@ -51,9 +51,9 @@ pipeline {
                         perform_code_build: true,
                         build_tool: "go",
                         pre_build_commands: [
-                            'cd ./Day-11/go-rest-api && go build -o myapp',  // Navigate to the correct directory
-                            'if [ ! -f go.mod ]; then go mod init example.com/go-app; fi',  // Initialize Go module if needed
-                            'go mod tidy'  // Clean and fetch dependencies
+                            'if [ ! -f go.mod ]; then go mod init example.com/go-app; fi',  // Navigate to the correct directory
+                             'go mod tidy',  // Initialize Go module if needed
+                            'docker run --rm -v ${WORKSPACE}/go-for-devops:/app -w /app golang:1.18 sh -c "go build -o output_binary ./Day-11/go-rest-api"'
                         ],
 
                         // Unit Testing
