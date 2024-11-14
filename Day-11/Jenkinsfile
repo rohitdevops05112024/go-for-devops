@@ -53,7 +53,7 @@ pipeline {
                         pre_build_commands: [
                             'if [ ! -f go.mod ]; then go mod init example.com/go-app; fi',  // Navigate to the correct directory
                              'go mod tidy',  // Initialize Go module if needed
-                            'docker run --rm -v ${WORKSPACE}/go-for-devops:/app -w /app golang:1.18 sh -c "go build -o output_binary ./Day-11/go-rest-api"'
+                            'docker run --rm -v ${WORKSPACE}/go-for-devops/Day-11/go-rest-api:/app -w /app golang:1.18 sh -c "go build -o output_binary myapp"'
                         ],
 
                         // Unit Testing
