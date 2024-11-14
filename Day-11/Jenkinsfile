@@ -1,3 +1,5 @@
+@Library('ot-central-ci') _  // Place @Library outside the pipeline block
+
 pipeline {
     agent any
 
@@ -10,7 +12,6 @@ pipeline {
         stage('Initialize Pipeline') {
             steps {
                 script {
-                    @Library('ot-central-ci') _
                     def cipipeline = new opstree.ci.templates.go_ci.go_ci()
 
                     cipipeline.call([
@@ -101,4 +102,5 @@ pipeline {
                 }
             }
         }
-
+    }
+}
