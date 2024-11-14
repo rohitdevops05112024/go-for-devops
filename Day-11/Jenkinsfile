@@ -50,7 +50,7 @@ pipeline {
                         perform_code_build: true,
                         build_tool: "go",
                         pre_build_commands: [
-                            'cd ./Day-11/go-rest-api && go build -o myapp',  // Navigate to the correct directory
+                            'cd ./Day-11/go-rest-api',  // Navigate to the correct directory
                             'if [ ! -f go.mod ]; then go mod init example.com/go-app; fi',  // Initialize Go module if needed
                             'go mod tidy'  // Clean and fetch dependencies
                         ],
@@ -110,7 +110,7 @@ pipeline {
                     cd ./Day-11/go-rest-api  # Ensure we're in the correct directory inside the container
                     if [ ! -f go.mod ]; then go mod init example.com/go-app; fi  # Ensure go.mod is present
                     go mod tidy  # Fetch and clean dependencies
-                    go build -o output_binary  # Build the Go app
+                    go build -o output_binary .  # Build the Go app, use the current directory as the package
                     '''
                 }
             }
