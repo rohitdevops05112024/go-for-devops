@@ -1,7 +1,3 @@
-Ediited Jenkinsfile
-
-
-
 @Library('ot-central-ci') _
 def cipipeline = new opstree.ci.templates.go_ci.go_ci()
 
