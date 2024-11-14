@@ -1,96 +1,105 @@
-@Library('ot-central-ci') _
-def cipipeline = new opstree.ci.templates.go_ci.go_ci()
+pipeline {
+    agent any
 
-node {
-    cipipeline.call([
-        // WORKSPACE MANAGEMENT
-        clean_workspace: true,
-        ignore_clean_workspace_failure: false,
-        delete_dirs: false,
-        clean_when_build_aborted: true,
-        clean_when_build_failed: true,
-        clean_when_not_built: true,
-        clean_when_build_succeed: true,
-        clean_when_build_unstable: true,
+    environment {
+        GOPATH = "${WORKSPACE}"
+        PATH = "${env.WORKSPACE}/bin:${env.PATH}"
+    }
 
-        // VCS MANAGEMENT
-        repo_https_url: "https://github.com/rohitdevops05112024/go-for-devops.git",
-        repo_ssh_url: "git@github.com:rohitdevops05112024/go-for-devops.git",
-        repo_branch: "main",
-        repo_url_type: "http",
-        jenkins_git_creds_id: "23797119-12d2-4012-9617-72a0315427e8",
-        source_code_path: "/go-for-devops",
+    stages {
+        stage('Initialize Pipeline') {
+            steps {
+                script {
+                    @Library('ot-central-ci') _
+                    def cipipeline = new opstree.ci.templates.go_ci.go_ci()
 
-        // Initialize Stage - Setup environment variables
-        environment_variables: [
-            GOPATH: "${env.WORKSPACE}",
-            PATH: "${env.WORKSPACE}/bin:${env.PATH}"
-        ],
+                    cipipeline.call([
+                        // WORKSPACE MANAGEMENT
+                        clean_workspace: true,
+                        ignore_clean_workspace_failure: false,
+                        delete_dirs: false,
+                        clean_when_build_aborted: true,
+                        clean_when_build_failed: true,
+                        clean_when_not_built: true,
+                        clean_when_build_succeed: true,
+                        clean_when_build_unstable: true,
 
-        // Dependency Scanning
-        dependency_check: false,
-        dependency_scan_tool: "owasp",
-        owasp_project_name: "go_project",
-        owasp_report_publish: true,
-        owasp_report_format: "json",
-        fail_job_if_dependency_returned_exception: true,
+                        // VCS MANAGEMENT
+                        repo_https_url: "https://github.com/rohitdevops05112024/go-for-devops.git",
+                        repo_ssh_url: "git@github.com:rohitdevops05112024/go-for-devops.git",
+                        repo_branch: "main",
+                        repo_url_type: "http",
+                        jenkins_git_creds_id: "23797119-12d2-4012-9617-72a0315427e8",
+                        source_code_path: "go-for-devops",
 
-        // Creds Scanning
-        gitleaks_check: false,
-        fail_job_if_leak_detected: false,
-        gitleaks_report_format: "html",
-        gitleaks_report_jenkins_publish: false,
+                        // Dependency Scanning
+                        dependency_check: false,
+                        dependency_scan_tool: "owasp",
+                        owasp_project_name: "go_project",
+                        owasp_report_publish: true,
+                        owasp_report_format: "json",
+                        fail_job_if_dependency_returned_exception: true,
 
-        // Build Configuration
-        perform_code_build: true,
-        build_tool: "go",
-        pre_build_commands: [
-            'cd ./Day-11/go-rest-api && go build -o myapp',  // Ensure we're in the correct directory
-            'if [ ! -f go.mod ]; then go mod init example.com/go-app; fi',
-            'go mod tidy'
-        ],
+                        // Creds Scanning
+                        gitleaks_check: false,
+                        fail_job_if_leak_detected: false,
+                        gitleaks_report_format: "html",
+                        gitleaks_report_jenkins_publish: false,
 
-        // Unit Testing
-        unit_testing_check: true,
-        fail_job_if_unit_issue_detected: false,
-        unit_test_reports_path: "test_report.json",
+                        // Build Configuration
+                        perform_code_build: true,
+                        build_tool: "go",
+                        pre_build_commands: [
+                            'cd ./Day-11/go-rest-api && go build -o myapp',  // Ensure we're in the correct directory
+                            'if [ ! -f go.mod ]; then go mod init example.com/go-app; fi',  // Initialize Go module if needed
+                            'go mod tidy'
+                        ],
 
-        // Static Code Analysis
-        codebase_to_scan_directory: "**",
-        static_code_analysis_check: false,
-        path_to_sonar_properties: "sonar-project.properties",
-        fail_job_if_analysis_returned_exception: false,
-        jenkins_sonarqube_token_creds_id: "sonar-token",
+                        // Unit Testing
+                        unit_testing_check: true,
+                        fail_job_if_unit_issue_detected: false,
+                        unit_test_reports_path: "test_report.json",
 
-        // Docker Build
-        perform_build_dockerfile: true,
-        image_name: "go-app",
-        dockerfile_location: "/Dockerfile",
-        dockerfile_context: "/go-for-devops",
+                        // Static Code Analysis
+                        codebase_to_scan_directory: "**",
+                        static_code_analysis_check: false,
+                        path_to_sonar_properties: "sonar-project.properties",
+                        fail_job_if_analysis_returned_exception: false,
+                        jenkins_sonarqube_token_creds_id: "sonar-token",
 
-        // Image Scanning
-        image_scanning_check: true,
-        image_tag: "latest",
-        scan_severity: "CRITICAL",
-        image_scanning_report_publish: true,
+                        // Docker Build
+                        perform_build_dockerfile: true,
+                        image_name: "go-app",
+                        dockerfile_location: "/Dockerfile",
+                        dockerfile_context: "./go-for-devops",  // Docker build context set to repo directory
 
-        // Image size validator
-        image_size_validator_check: true,
-        max_allowed_image_size: 100,
-        fail_job_if_validation_fail: false,
+                        // Image Scanning
+                        image_scanning_check: true,
+                        image_tag: "latest",
+                        scan_severity: "CRITICAL",
+                        image_scanning_report_publish: true,
 
-        // Publish Artifact (Docker Image)
-        artifact_publish_check: true,
-        artifact_destination_type: "ecr",
-        jenkins_aws_credentials_id: "aws-credentials-id",
-        docker_image_name: "go-app",
-        ecr_repo_name: "go-app-repo",
-        ecr_region: "us-east-1",
-        account_id: "123456789012",
+                        // Image size validator
+                        image_size_validator_check: true,
+                        max_allowed_image_size: 100,
+                        fail_job_if_validation_fail: false,
 
-        // Notification
-        notification_enabled: false,
-        notification_channel: "teams",
-        webhook_url_creds_id: "teams_webhook"
-    ])
+                        // Publish Artifact (Docker Image)
+                        artifact_publish_check: true,
+                        artifact_destination_type: "ecr",
+                        jenkins_aws_credentials_id: "aws-credentials-id",
+                        docker_image_name: "go-app",
+                        ecr_repo_name: "go-app-repo",
+                        ecr_region: "us-east-1",
+                        account_id: "123456789012",
+
+                        // Notification
+                        notification_enabled: false,
+                        notification_channel: "teams",
+                        webhook_url_creds_id: "teams_webhook"
+                    ])
+                }
+            }
+        }
+    }
 }
