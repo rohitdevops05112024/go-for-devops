@@ -40,14 +40,18 @@ node {
         fail_job_if_leak_detected: false,
         gitleaks_report_format: "html",
         gitleaks_report_jenkins_publish: false,
-
-        // Build Configuration
-        perform_code_build: true,
-        build_tool: "go",
+        
+        // Pre-Build Commands: Ensure `go.mod` is initialized in the correct directory
         pre_build_commands: [
+            'cd go-for-devops',  // Ensure we're in the correct directory
             'if [ ! -f go.mod ]; then go mod init example.com/go-app; fi',
             'go mod tidy'
         ],
+
+        // Build Configuration
+        perform_code_build: true,
+        build_tool: "go",        
+
 
         // Unit Testing
         unit_testing_check: true,
