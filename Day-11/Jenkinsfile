@@ -13,13 +13,13 @@ node {
         clean_when_build_succeed: true,
         clean_when_build_unstable: true,
 
-        // VCS MANAGEMENT 
+        // VCS MANAGEMENT
         repo_https_url: "https://github.com/rohitdevops05112024/go-for-devops.git",
         repo_ssh_url: "git@github.com:rohitdevops05112024/go-for-devops.git",
         repo_branch: "main",
         repo_url_type: "http",
         jenkins_git_creds_id: "23797119-12d2-4012-9617-72a0315427e8",
-        source_code_path: "/",
+        source_code_path: "/go-for-devops",
 
         // Initialize Stage - Setup environment variables
         environment_variables: [
@@ -40,24 +40,21 @@ node {
         fail_job_if_leak_detected: false,
         gitleaks_report_format: "html",
         gitleaks_report_jenkins_publish: false,
-        
-        // Pre-Build Commands: Ensure `go.mod` is initialized in the correct directory
-        pre_build_commands: [
-            'cd go-for-devops',  // Ensure we're in the correct directory
-            'if [ ! -f go.mod ]; then go mod init example.com/go-app; fi',
-            'go mod tidy'
-        ],
 
         // Build Configuration
         perform_code_build: true,
-        build_tool: "go",        
-
+        build_tool: "go",
+        pre_build_commands: [
+            'cd go-for-devops/Day-11',  // Ensure we're in the correct directory
+            'if [ ! -f go.mod ]; then go mod init example.com/go-app; fi',
+            'go mod tidy'
+        ],
 
         // Unit Testing
         unit_testing_check: true,
         fail_job_if_unit_issue_detected: false,
         unit_test_reports_path: "test_report.json",
-        
+
         // Static Code Analysis
         codebase_to_scan_directory: "**",
         static_code_analysis_check: false,
@@ -69,7 +66,7 @@ node {
         perform_build_dockerfile: true,
         image_name: "go-app",
         dockerfile_location: "/Dockerfile",
-        dockerfile_context: "/",
+        dockerfile_context: "/go-for-devops",
 
         // Image Scanning
         image_scanning_check: true,
