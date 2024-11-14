@@ -45,7 +45,7 @@ node {
         perform_code_build: true,
         build_tool: "go",
         pre_build_commands: [
-            'cd go-for-devops/Day-11',  // Ensure we're in the correct directory
+            'cd ./Day-11/go-rest-api && go build -o myapp',  // Ensure we're in the correct directory
             'if [ ! -f go.mod ]; then go mod init example.com/go-app; fi',
             'go mod tidy'
         ],
